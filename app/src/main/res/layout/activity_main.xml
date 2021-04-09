@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="190dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="@dimen/padding"
+            android:gravity="top|start"
+            android:scrollbars="horizontal"
+            android:scrollHorizontally="true"
+            android:textSize="@dimen/input_text_size"
+            android:autofillHints=""
+            android:inputType="text"
+            android:text="@string/user_input_placeholder"
+            tools:text="@string/user_input_placeholder"
+            android:hint=""/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="bottom|end"
+            android:paddingBottom="@dimen/padding_big"
+            android:paddingRight="@dimen/padding_mid"
+            android:textSize="@dimen/input_text_size"
+            android:text="@string/user_output_placeholder"
+            tools:text="@string/user_output_placeholder"
+            />
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

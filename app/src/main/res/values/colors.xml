@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">@color/primary_dark</color>\
+    <color name="primary_variant">@color/primary_dark</color>
+    <color name="secondary">@color/primary_dark</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="equals_color_bg">#FF2EC973</color>
+    <color name="operator_color_bg">#FFFF9500</color>
+    <color name="operator_color_txt">#FFF8DDB4</color>
+
+    <color name="primary_dark">#FF17181A</color>
+    <color name="primary_light">#FFF6F8F9</color>
+
+    <color name="operand_bg_light">#FFE9F0F4</color>
+    <color name="operand_bg_dark">#FF222427</color>
+
+    <color name="cancel_bg_dark">#FF9E3139</color>
+    <color name="cancel_bg_light">#FFF8ECED</color>
+
+    <color name="cancel_txt_dark">#FF2D191E</color>
+    <color name="cancel_txt_light">#FFF7979D</color>
+</resources>
