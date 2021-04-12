@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="input_text_size">35sp</dimen>
+    <dimen name="output_text_size">45sp</dimen>
 
+    <dimen name="text">34sp</dimen>
 
-    <dimen name="padding_big">32dp</dimen>
+    <dimen name="padding_bigger">32dp</dimen>
+    <dimen name="padding_big">20dp</dimen>
     <dimen name="padding">16dp</dimen>
     <dimen name="padding_mid">12dp</dimen>
     <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_smallest">4dp</dimen>
+
+    <dimen name="margin_smallest">4dp</dimen>
+
+    <dimen name="button_radius">28dp</dimen>
+    <dimen name="text_dimen">54dp</dimen>
 </resources>

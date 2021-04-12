@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="@dimen/padding"
+    android:orientation="vertical"
+    android:gravity="center_vertical"
+    android:layout_gravity="center"
+    android:layout_width="match_parent"
+    android:layout_weight="6.5"
+    android:layout_height="0dp">
+
+    <include layout="@layout/first_row" />
+
+    <include layout="@layout/second_row" />
+
+    <include layout="@layout/third_row" />
+
+    <include layout="@layout/fourth_row" />
+
+    <include layout="@layout/fifth_row" />
+
+</LinearLayout>
