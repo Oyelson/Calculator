@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oyegbite.calculator.databinding.ActivityMainBinding;
+import com.oyegbite.calculator.utils.AppUtils;
 import com.oyegbite.calculator.utils.Expression;
 
 import java.util.HashMap;
@@ -28,12 +30,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ActivityMainBinding mBinding;
     private Toast mToast;
+    private InputMethodManager mImm;
 
     private TextView delete, deleteAll, openParen, closeParen, divide;
     private TextView seven, eight, nine, multiply;
     private TextView four, five, six, minus;
     private TextView one, two, three, plus;
-    private TextView zero, point, equals;
+    private TextView exponent, zero, point, equals;
     
     private Map<Integer, String> operandsID;
     private Map<Integer, String> operatorsID;
@@ -90,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         activateThreeButton();
         activatePlusButton();
 
+        activateExponentButton();
         activateZeroButton();
         activatePointButton();
         activateEqualsButton();
@@ -117,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             put(R.id.multiply, getString(R.string.multiply));
             put(R.id.minus, getString(R.string.minus));
             put(R.id.plus, getString(R.string.plus));
+            put(R.id.exponent, getString(R.string.exponent));
         }};
     }
 
@@ -130,12 +135,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void activateInputScreen() {
         inputScreen = mBinding.screen.inputScreen;
         inputScreen.setSelection(inputScreen.getText().length());
-        hideKeyboard();
-        inputScreen.setOnClickListener(new View.OnClickListener() {
+        inputScreen.requestFocus();
+        hideKeyboard(inputScreen);
+        inputScreen.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                hideKeyboard();
+            public boolean onTouch(View v, MotionEvent event) {
+                v.onTouchEvent(event);
+                hideKeyboard(v);
+                return true;
             }
+
         });
     }
 
@@ -228,6 +237,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         plus.setOnClickListener(this);
     }
 
+    private void activateExponentButton() {
+        exponent = mBinding.operandOperatorLayout.zeroToEquals.exponent;
+        exponent.setOnClickListener(this);
+    }
+
     private void activateZeroButton() {
         zero = mBinding.operandOperatorLayout.zeroToEquals.zero;
         zero.setOnClickListener(this);
@@ -249,13 +263,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         vibrateDevice();
         int viewID = view.getId();
 
-        if (lastClickedButtonID == R.id.equals && viewID != R.id.equals) {
-            mExpression.clear();
-        }
+        int cursorPosStart = Math.max(0, inputScreen.getSelectionStart());
+        int cursorPosEnd = Math.max(0, inputScreen.getSelectionEnd());
+
+//        if (lastClickedButtonID == R.id.equals && viewID != R.id.equals) {
+//            mExpression.clear();
+//        }
 
         Log.i(TAG, "");
         if (viewID == R.id.equals) {
             Log.i(TAG, getString(R.string.equals) + " " + getString(R.string.was_clicked));
+            displayFinalResult();
+            lastClickedButtonID = viewID;
+            return;
 
         } else if (viewID == R.id.delete_all) { // When the delete button is clicked
             Log.i(TAG, getString(R.string.delete_all_title) + " " + getString(R.string.was_clicked));
@@ -308,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void displayInput() {
-        inputScreen.setText(mExpression.getReadableInput());
+        inputScreen.setText(mExpression.getReadableInput(), TextView.BufferType.SPANNABLE);
         inputScreen.setSelection(inputScreen.getText().length()); // Place cursor at end of
         
         Log.i(TAG, "Raw Input = '" + mExpression.getRawInput() + "'");
@@ -325,9 +345,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     
     @RequiresApi(api = Build.VERSION_CODES.R)
     private void displayResult() {
-        Double result = mExpression.compute();
+        String result = mExpression.compute();
         if (result != null) {
-            outputScreen.setText(String.format(Locale.getDefault(), "%f", result));
+            if (result.equals("Infinity")) {
+                mToast = AppUtils.showToastLong(
+                        this,
+                        getString(R.string.cant_divide_by_zero),
+                        mToast,
+                        Toast.LENGTH_SHORT
+                );
+                return;
+            }
+            outputScreen.setText(result);
+
         } else {
             if (mExpression.getRawInput().isEmpty()) {
                 outputScreen.setText("");
@@ -337,21 +367,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private void displayFinalResult() {
+        String result = mExpression.compute();
+        if (result != null) {
+            if (result.equals("Infinity")) {
+                mToast = AppUtils.showToastLong(
+                        this,
+                        getString(R.string.cant_divide_by_zero),
+                        mToast,
+                        Toast.LENGTH_SHORT
+                );
+                return;
+            }
+            mExpression.clear();
+            mExpression.add(result);
+            inputScreen.setText(result);
+            inputScreen.setSelection(inputScreen.getText().length());
+            outputScreen.setText("");
+
+        } else {
+            if (mExpression.getRawInput().isEmpty()) {
+                outputScreen.setText("");
+            } else {
+                outputScreen.setText(getString(R.string.error));
+            }
+        }
+    }
+
     @Override
     protected void onResume() {
-        hideKeyboard();
+        hideKeyboard(inputScreen);
         super.onResume();
     }
 
     @Override
     protected void onStart() {
-        hideKeyboard();
+        hideKeyboard(inputScreen);
         super.onStart();
     }
 
-    private void hideKeyboard() {
+    private void hideKeyboard(View v) {
         Log.i(TAG, "inputScreen = " + inputScreen);
-        InputMethodManager imm = (InputMethodManager) getSystemService (Context.INPUT_METHOD_SERVICE);
-//        imm.hideSoftInputFromWindow (inputScreen.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        getMethodManager().hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+    }
+
+    private InputMethodManager getMethodManager() {
+        if (mImm == null) {
+            mImm = (InputMethodManager) getSystemService (Context.INPUT_METHOD_SERVICE);
+        }
+        return mImm;
     }
 }

@@ -25,9 +25,11 @@
     <string name="minus">-</string>
     <string name="plus">+</string>
     <string name="equals">=</string>
+    <string name="exponent">^</string>
 
     <string name="delete_all_title">delete all</string>
     <string name="delete_title">Del</string>
+    <string name="exponent_title">x<sup>y</sup></string>
     <string name="open_paren_title">open parentheses</string>
     <string name="close_paren_title">close parentheses</string>
 
@@ -52,5 +54,7 @@
     <string name="was_clicked">was clicked</string>
 
     <string name="error">Error: Incomplete expression</string>
+
+    <string name="cant_divide_by_zero">Can\'t be divide by zero</string>
 
 </resources>

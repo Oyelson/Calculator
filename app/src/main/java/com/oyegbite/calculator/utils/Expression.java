@@ -2,6 +2,10 @@ package com.oyegbite.calculator.utils;
 
 import android.content.Context;
 import android.os.Build;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
@@ -10,6 +14,7 @@ import com.oyegbite.calculator.R;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,8 +34,11 @@ public class Expression {
     private final String PLUS;
     private final String DIVIDE;
     private final String MULTIPLY;
+    private final String EXPONENT;
     private final String OPEN;
     private final String CLOSE;
+
+    private final int PRECISION;
 
 
     public Expression(Context context) {
@@ -42,6 +50,9 @@ public class Expression {
         PLUS = context.getString(R.string.plus);
         DIVIDE = context.getString(R.string.divide);
         MULTIPLY = context.getString(R.string.multiply);
+        EXPONENT = context.getString(R.string.exponent);
+
+        PRECISION = 6; // Default precision value.
 
         // ÷ × - +
         operators = new HashSet<>(
@@ -50,7 +61,35 @@ public class Expression {
                         MULTIPLY,
                         DIVIDE,
                         MINUS,
-                        PLUS
+                        PLUS,
+                        EXPONENT
+                )
+        );
+        clear();
+    }
+
+    public Expression(Context context, int precision) {
+        mContext = context;
+        OPEN = context.getString(R.string.open_paren);
+        CLOSE = context.getString(R.string.close_paren);
+        POINT = context.getString(R.string.point);
+        MINUS = context.getString(R.string.minus);
+        PLUS = context.getString(R.string.plus);
+        DIVIDE = context.getString(R.string.divide);
+        MULTIPLY = context.getString(R.string.multiply);
+        EXPONENT = context.getString(R.string.exponent);
+
+        PRECISION = precision;
+
+        // ÷ × - +
+        operators = new HashSet<>(
+                Arrays.asList(
+                        "+", "-", "/", "*", "–",
+                        MULTIPLY,
+                        DIVIDE,
+                        MINUS,
+                        PLUS,
+                        EXPONENT
                 )
         );
         clear();
@@ -98,15 +137,20 @@ public class Expression {
         for (int i = 0; i < len; i++) {
             String token = mInput.charAt(i) + "";
 
+            // If expression start with a point, append a "0" before it
             if (i == 0 && token.equals(POINT)) {
                 sb.append("0");
             } else if (i > 0) {
+                // If the user type "50 + .7", interpret it as "50 + 0.7"
+                // i.e, if we meet a point character and character before it isn't a digit, add a "0"
+                // before it.
                 char previousToken = mInput.charAt(i - 1);
                 if (token.equals(POINT) && !Character.isDigit(previousToken)) {
                     sb.append("0");
                 }
             }
 
+            // Add a space only before and after an operator (+, -, * and /)
             if (operators.contains(token)) {
                 sb.append(" ");
                 sb.append(token);
@@ -117,6 +161,7 @@ public class Expression {
             }
 
 
+            // Make sure you add all close parentheses if needed to balanced the expression.
             if (token.equals(OPEN)) {
                 opened++;
             } else if (token.equals(CLOSE)) {
@@ -127,6 +172,8 @@ public class Expression {
                 }
             }
 
+            // If we meet a point and there is no digit after it, add a "0"
+            // i.e "28 + 5." => "28 + 5.0", "28 + 5. + 205 - 9" => "28 + 5.0 + 205 - 9"
             if (token.equals(POINT) && (i == len - 1 || (i + 1) < len && !Character.isDigit(mInput.charAt(i + 1)))) {
                 sb.append("0");
             }
@@ -138,19 +185,51 @@ public class Expression {
             opened--;
         }
 
+        int i = sb.length() - 1;
+        while (i >= 0 && (operators.contains(sb.charAt(i)+"") || sb.charAt(i) == ' ')) {
+            sb.deleteCharAt(i);
+            i--;
+        }
+
         return sb.toString();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
-    public Double compute() {
+    public String compute() {
         try {
-            return CalculatorUtil.calculate(mContext, getComputationInput());
+            Double result = CalculatorUtil.calculate(mContext, getComputationInput());
+
+            if (result == null) return null;
+
+            Log.i(TAG, "result without trunc. = " + result);
+
+            String format = "%." + PRECISION + "f";
+            String truncated = String.format(Locale.getDefault(), format, result);
+
+            // It is certain that Double would include point in result.
+            // Hence, remove all trailing zeros before the decimal point.
+            // e.g 10.000000 => 10, 10.0 => 10, 1043.00345981 => 1043.003459.
+            StringBuilder sb = new StringBuilder(truncated);
+            int i = sb.length() - 1;
+            while(i >= 0 && sb.charAt(i) == '0') {
+                sb.deleteCharAt(i);
+                i--;
+            }
+            // If we have removed all the trailing zeros and we need to remove the point.
+            if (i >= 0 && sb.charAt(i) == '.') sb.deleteCharAt(i);
+
+            if (sb.length() > 0 && !Character.isDigit(sb.charAt(0))) {
+                return sb.toString();
+            }
+
+            return formatNumber(sb.toString());
+
         } catch (Exception e) {
             return null;
         }
     }
 
-    public String getReadableInput() {
+    public Spannable getReadableInput() {
         StringBuilder numbers = new StringBuilder();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < mInput.length(); i++) {
@@ -177,10 +256,26 @@ public class Expression {
         }
 
         if (numbers.length() > 0) sb.append(numbers.toString());
-        return sb.toString();
+
+        // Add colors to all the operators in the input.
+        String displayString = sb.toString();
+        Spannable spannableWithColoredOperators = new SpannableString(displayString);
+        for (int s = 0; s < displayString.length(); s++) {
+            if (operators.contains(displayString.charAt(s)+"")) {
+                spannableWithColoredOperators.setSpan(
+                        new ForegroundColorSpan(mContext.getResources().getColor(R.color.equals_color_bg)),
+                        s,
+                        s + 1,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+            }
+        }
+
+        return spannableWithColoredOperators;
     }
 
     public String formatNumber(String number) {
+        if (number.length() == 0) return "";
         StringBuilder sb = new StringBuilder();
         String[] numbers = number.split("\\.");
         if (numbers.length == 0) return "";
@@ -200,14 +295,14 @@ public class Expression {
 
             if (residue > 0) {
                 sb.append(before.substring(start, end));
-                sb.append(" ");
+                sb.append(",");
             }
 
             while (remaining > 0) {
                 start = end;
                 end = start + 3;
                 sb.append(before.substring(start, end));
-                sb.append(" ");
+                sb.append(",");
                 remaining -= 3;
             }
         }
@@ -245,7 +340,7 @@ public class Expression {
 
     private StringBuilder modify(String input) {
         // -+÷×
-        input = input.replaceAll("(?:\\s+|[^-\\-+÷×*/().\\d]*)", "");
+        input = input.replaceAll("(?:\\s+|[^-\\-+÷×*^/().\\d]*)", "");
 
         StringBuilder sb = new StringBuilder();
         int len = input.length();
@@ -283,13 +378,13 @@ public class Expression {
         // Operands: 0 to 9
         // Other tokens: ., ( and )
         // 1. Only ., +, -, ( or operand at beginning of expression (if it is a point, add a "0" before it).
-        String regex1 = "^\\s*(?:0\\.|[–\\-+]|\\(+|[1-9])";
+        String regex1 = "^\\s*(?:0\\.|[–\\-+]|\\(+|[0-9])";
         Matcher matcher1 = Pattern.compile(regex1).matcher(input);
         if (!matcher1.find()) return false;
         Log.i(TAG, "Passed regex1");
 
         // 2. No adjacent operators.
-        String regex2 = "(?:[–\\-+÷×*/]\\s*){2,}"; // Get all adjacent operators
+        String regex2 = "(?:[–\\-+÷×*^/]\\s*){2,}"; // Get all adjacent operators
         Matcher matcher2 = Pattern.compile(regex2).matcher(input);
         if (matcher2.find()) return false;
         Log.i(TAG, "Passed regex2");
@@ -304,14 +399,14 @@ public class Expression {
         // 4. Only +, -, (, and operands just after the open parentheses
         // (i.e *, /, ., ) should not be just after the open parentheses)
         // Get all the *, /, ., ) just after the open parentheses.
-        String regex4 = "(?:\\()\\s*(?=[÷×/*.)])";
+        String regex4 = "(?:\\()\\s*(?=[÷×^/*.)])";
         Matcher matcher4 = Pattern.compile(regex4).matcher(input);
         if (matcher4.find()) return false;
         Log.i(TAG, "Passed regex4");
 
         // 5. No operator, point, or ( just before the close parentheses.
         // Get all operator, point or ( just before the close parentheses.
-        String regex5 = "[–\\-+/*÷×.(]\\s*(?=\\))";
+        String regex5 = "[–\\-+/*÷×^.(]\\s*(?=\\))";
         Matcher matcher5 = Pattern.compile(regex5).matcher(input);
         if (matcher5.find()) return false;
         Log.i(TAG, "Passed regex5");
@@ -325,7 +420,7 @@ public class Expression {
 
         // 7. Only a number can preceed and also follow a point.
         // Get all non-number that preceed or follow a point.
-        String regex7 = "([–\\-+/*÷×)(.]\\s*(?=\\.)|(?:\\.)\\s*(?=[–\\-+/*÷×)(.]))";
+        String regex7 = "([–\\-+/*÷×^)(.]\\s*(?=\\.)|(?:\\.)\\s*(?=[–\\-+/*÷×^)(.]))";
         Matcher matcher7 = Pattern.compile(regex7).matcher(input);
         if (matcher7.find()) return false;
         Log.i(TAG, "Passed regex7");

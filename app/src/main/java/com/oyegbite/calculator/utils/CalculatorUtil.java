@@ -7,6 +7,7 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Stack;
 import java.util.List;
@@ -211,6 +212,8 @@ public class CalculatorUtil {
 
         // If postfix expression is valid, the stack would just have one value left.
         if (stack.empty()) return null;
+
+        Log.i(TAG, "stack = " + Arrays.toString(stack.toArray()));
         return stack.peek();
     }
 

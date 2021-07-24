@@ -22,7 +22,7 @@ public class AppUtils {
         TextView view = (TextView) newToast.getView().findViewById(android.R.id.message);
         if(view != null) view.setGravity(Gravity.BOTTOM);
         // Set the prevToast view at the center of the device.
-        newToast.setGravity(Gravity.BOTTOM, 0, 0);
+        newToast.setGravity(Gravity.CENTER, 0, 0);
         newToast.show();
         return newToast;
     }
