@@ -1,6 +1,9 @@
 package com.oyegbite.calculator.utils;
 
+import android.content.Context;
 import android.os.Build;
+import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -12,26 +15,26 @@ import java.lang.StringBuilder;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class CalculatorUtil {
-    private static String mInfixExpression;
+    private static final String TAG = CalculatorUtil.class.getSimpleName();
+
     private static final Map<String, Integer> operatorPrecedence =
             Map.ofEntries(
                     Map.entry("^", 3), // Exponent
                     Map.entry("/", 2), // Division
+                    Map.entry("÷", 2), // Division
                     Map.entry("*", 2), // Multiplication
+                    Map.entry("×", 2), // Multiplication
                     Map.entry("+", 1), // Addition
                     Map.entry("-", 1),  // Subtraction
                     Map.entry("–", 1)  // Subtraction
             );
 
-    public static Double calculate(String infixExpression) {
+    private static Context mContext;
+
+    public static Double calculate(Context context, String infixExpression) {
+        mContext = context;
         List<String> postfixExpression = convertInfixToPostfix(infixExpression);
         return evaluatePostfix(postfixExpression);
-    }
-
-    public static Boolean isExpressionValid() {
-        // Todo: Check if the expression is valid based on the operator,
-        // operand and the parenthesis.
-        return true;
     }
 
     /**
@@ -60,7 +63,8 @@ public class CalculatorUtil {
                 sb.append("0");
             }
 
-            if (i > 0 && isCloseParentheses(String.valueOf(infixExpression.charAt(i-1)))
+            if (i > 0 && isCloseParentheses(
+                    String.valueOf(infixExpression.charAt(i-1)))
                     && (isOpenParentheses(String.valueOf(token))
                     || Character.isDigit(token))) {
                 // "2*(3+2)5" --> "2*(3+2)*5"
@@ -103,11 +107,22 @@ public class CalculatorUtil {
      *
      * Assumes infixExpression is a valid expression.
      *
-     * @param infixExpression
+     * @param infixExpression input mathematical expression from user.
      */
     public static List<String> convertInfixToPostfix(String infixExpression) {
         infixExpression = includeMultiplyOperatorIfNeeded(infixExpression);
-        System.out.println(infixExpression);
+
+        Log.i(TAG, "infixExpression before = " + infixExpression);
+
+        String newInfixExpression = infixExpression.replaceAll("[()]", "");
+
+        Log.i(TAG, "infixExpression after = " + newInfixExpression);
+
+        if (!new Expression(mContext).validate(newInfixExpression)) {
+            return new ArrayList<String>();
+        }
+        Log.i(TAG, "infixExpression before = " + infixExpression);
+
         Stack<String> operatorStack = new Stack<>();
         List<String> postfix = new ArrayList<>();
 
@@ -120,7 +135,7 @@ public class CalculatorUtil {
             if (isOpenParentheses(token)) { // If we meet a starting boundary
                 operatorStack.add(token);
             } else if (isCloseParentheses(token)) { // If we meet a closing boundary
-                // When we see a closing boundary, and our cummulative digits is not empty,
+                // When we see a closing boundary, and our cumulative digits is not empty,
                 // then our digits becomes a number.
                 if (!digits.isEmpty()) {
                     postfix.add(String.join("", digits));
@@ -155,7 +170,7 @@ public class CalculatorUtil {
                 }
                 operatorStack.add(token);
             } else {
-                // Get cummulative of digits (say we have 2098+300*91-84/3)
+                // Get cumulative of digits (say we have 2098+300*91-84/3)
                 digits.add(token);
             }
         }
@@ -177,12 +192,12 @@ public class CalculatorUtil {
      * @return the evaluation of the postfix expression.
      */
     public static Double evaluatePostfix(List<String> postfixExpression) {
-        System.out.println(postfixExpression);
+        Log.i(TAG, "postfixExpression = " + postfixExpression);
         // A token here is either an operand or an operator.
         Stack<Double> stack = new Stack<>();
         for (String token: postfixExpression) {
             // If token is an operator, then it should be applied to
-            // the last two operands preceeding it and perform the operation.
+            // the last two operands preceding it and perform the operation.
             if (isTokenOperator(token)) {
                 double secondOperand = stack.pop();
                 double firstOperand = stack.pop();
@@ -192,10 +207,10 @@ public class CalculatorUtil {
             } else {
                 stack.push(Double.valueOf(token));
             }
-
         }
 
         // If postfix expression is valid, the stack would just have one value left.
+        if (stack.empty()) return null;
         return stack.peek();
     }
 
@@ -208,12 +223,14 @@ public class CalculatorUtil {
                 || token.equals("-")
                 || token.equals("–")
                 || token.equals("*")
+                || token.equals("×")
                 || token.equals("/")
+                || token.equals("÷")
                 || token.equals("^");
     }
 
     public static Boolean isDigitEmpty(String digits) {
-        return digits.equals("") || digits == null;
+        return TextUtils.isEmpty(digits);
     }
 
     public static Boolean isOpenParentheses(String token) {
@@ -229,18 +246,20 @@ public class CalculatorUtil {
     }
 
     private static Double performOperation(double firstOperand, double secondOperand, String operator) {
-        if (operator.equals("^")) {
-            return Math.pow(firstOperand, secondOperand);
-        } else if (operator.equals("*")) {
-            return firstOperand * secondOperand;
-        } else if (operator.equals("/")) {
-            return firstOperand / (double) secondOperand;
-        } else if (operator.equals("+")) {
-            return firstOperand + secondOperand;
-        } else if (operator.equals("-")) {
-            return firstOperand - secondOperand;
-        } else if (operator.equals("–")) {
-            return firstOperand - secondOperand;
+        switch (operator) {
+            case "^":
+                return Math.pow(firstOperand, secondOperand);
+            case "*":
+            case "×":
+                return firstOperand * secondOperand;
+            case "/":
+            case "÷":
+                return firstOperand / (double) secondOperand;
+            case "+":
+                return firstOperand + secondOperand;
+            case "-":
+            case "–":
+                return firstOperand - secondOperand;
         }
         return Double.MAX_VALUE;
     }

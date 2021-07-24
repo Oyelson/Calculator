@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:id="@+id/first_row">
+<layout>
 
-    <TextView
-        android:id="@+id/zero"
-        android:text="@string/zero"
-        android:textColor="@color/text_light"
-        android:background="@drawable/rounded_button_operand"
-        style="@style/ButtonStyle"
-        android:layout_weight="2"
-        />
+    <LinearLayout
 
-    <TextView
-        android:id="@+id/point"
-        android:text="@string/point"
-        android:textColor="@color/text_light"
-        android:background="@drawable/rounded_button_operand"
-        style="@style/ButtonStyle"
-        />
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/first_row">
 
-    <TextView
-        android:id="@+id/equals"
-        android:text="@string/equals"
-        android:textColor="@color/white"
-        android:background="@drawable/rounded_button_equals"
-        style="@style/ButtonStyle"
-        />
+        <TextView
+            android:id="@+id/zero"
+            android:text="@string/zero"
+            android:textColor="@color/text_light"
+            android:background="@drawable/rounded_button_operand"
+            style="@style/ButtonStyle"
+            android:layout_weight="2"
+            />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/point"
+            android:text="@string/point"
+            android:textColor="@color/text_light"
+            android:background="@drawable/rounded_button_operand"
+            style="@style/ButtonStyle"
+            />
+
+        <TextView
+            android:id="@+id/equals"
+            android:text="@string/equals"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded_button_equals"
+            style="@style/ButtonStyle"
+            />
+
+    </LinearLayout>
+
+</layout>

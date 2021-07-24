@@ -1,42 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:id="@+id/first_row">
+<layout>
 
-    <TextView
-        android:id="@+id/four"
-        android:text="@string/four"
-        android:textColor="@color/text_light"
-        android:background="@drawable/rounded_button_operand"
-        style="@style/ButtonStyle"
-        />
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/first_row">
 
-    <TextView
-        android:id="@+id/five"
-        android:text="@string/five"
-        android:textColor="@color/text_light"
-        android:background="@drawable/rounded_button_operand"
-        style="@style/ButtonStyle"
-        />
+        <TextView
+            android:id="@+id/four"
+            android:text="@string/four"
+            android:textColor="@color/text_light"
+            android:background="@drawable/rounded_button_operand"
+            style="@style/ButtonStyle"
+            />
 
-    <TextView
-        android:id="@+id/six"
-        android:text="@string/six"
-        android:textColor="@color/text_light"
-        android:background="@drawable/rounded_button_operand"
-        style="@style/ButtonStyle"
-        />
+        <TextView
+            android:id="@+id/five"
+            android:text="@string/five"
+            android:textColor="@color/text_light"
+            android:background="@drawable/rounded_button_operand"
+            style="@style/ButtonStyle"
+            />
 
-    <TextView
-        android:id="@+id/minus"
-        android:text="@string/minus"
-        android:textColor="@color/white"
-        android:background="@drawable/rounded_button_operator"
-        style="@style/ButtonStyle"
-        />
+        <TextView
+            android:id="@+id/six"
+            android:text="@string/six"
+            android:textColor="@color/text_light"
+            android:background="@drawable/rounded_button_operand"
+            style="@style/ButtonStyle"
+            />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/minus"
+            android:text="@string/minus"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded_button_operator"
+            style="@style/ButtonStyle"
+            />
+
+    </LinearLayout>
+
+</layout>

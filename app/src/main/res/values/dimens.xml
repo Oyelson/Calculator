@@ -5,14 +5,26 @@
 
     <dimen name="text">34sp</dimen>
 
+    <dimen name="margin_lord">112dp</dimen>
+    <dimen name="margin_largest">56dp</dimen>
+    <dimen name="margin_larger">40dp</dimen>
+    <dimen name="margin_large">32dp</dimen>
+    <dimen name="margin_biggest">28dp</dimen>
+    <dimen name="margin_bigger">24dp</dimen>
+    <dimen name="margin_big">20dp</dimen>
+    <dimen name="margin_mid">16dp</dimen>
+    <dimen name="margin_small">12dp</dimen>
+    <dimen name="margin_smaller">8dp</dimen>
+    <dimen name="margin_smallest">4dp</dimen>
+    <dimen name="margin_micro">2dp</dimen>
+    <dimen name="no_margin">0dp</dimen>
+
     <dimen name="padding_bigger">32dp</dimen>
     <dimen name="padding_big">20dp</dimen>
     <dimen name="padding">16dp</dimen>
     <dimen name="padding_mid">12dp</dimen>
     <dimen name="padding_small">8dp</dimen>
     <dimen name="padding_smallest">4dp</dimen>
-
-    <dimen name="margin_smallest">4dp</dimen>
 
     <dimen name="button_radius">28dp</dimen>
     <dimen name="text_dimen">54dp</dimen>

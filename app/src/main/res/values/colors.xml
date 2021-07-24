@@ -9,6 +9,7 @@
     <color name="text_light">#FFFFFFFF</color>
 
     <color name="equals_color_bg">#FF2EC973</color>
+    <color name="equals_color_bg_dim">#E62EC973</color>
     <color name="operator_color_bg">#FFFF9500</color>
     <color name="operator_color_txt">#FFF8DDB4</color>
 

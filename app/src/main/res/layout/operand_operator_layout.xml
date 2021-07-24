@@ -1,22 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="@dimen/padding"
-    android:orientation="vertical"
-    android:gravity="center_vertical"
-    android:layout_gravity="center"
-    android:layout_width="match_parent"
-    android:layout_weight="6.5"
-    android:layout_height="0dp">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <include layout="@layout/first_row" />
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:padding="@dimen/padding"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/margin_big"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <include layout="@layout/second_row" />
+        <include
+            android:id="@+id/cancel_to_divide"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            layout="@layout/first_row"
+            />
 
-    <include layout="@layout/third_row" />
+        <include
+            android:id="@+id/seven_to_multiply"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            layout="@layout/second_row"
+            />
 
-    <include layout="@layout/fourth_row" />
+        <include
+            android:id="@+id/four_to_minus"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            layout="@layout/third_row"
+            />
 
-    <include layout="@layout/fifth_row" />
+        <include
+            android:id="@+id/one_to_plus"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            layout="@layout/fourth_row"
+            />
 
-</LinearLayout>
+        <include
+            android:id="@+id/zero_to_equals"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            layout="@layout/fifth_row"
+            />
+
+    </LinearLayout>
+
+</layout>

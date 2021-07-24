@@ -1,48 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:padding="@dimen/padding_bigger"
-    android:layout_width="match_parent"
-    android:layout_weight="3.5"
-    android:layout_height="0dp">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <EditText
-        android:id="@+id/input_screen"
-        android:enabled="false"
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/padding_bigger"
+        android:paddingRight="@dimen/padding_bigger"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="top|start"
-        android:maxLines="1"
-        android:lines="1"
-        android:scrollbars="horizontal"
-        android:scrollHorizontally="true"
-        android:textColor="@color/white"
-        android:textSize="@dimen/input_text_size"
-        android:textStyle="bold"
-        android:inputType="text"
-        android:textCursorDrawable="@drawable/cursor"
-        android:background="@android:color/transparent"
-        android:text="@string/user_input_placeholder"
-        tools:text="@string/user_input_placeholder"
-        android:autofillHints=""
-        android:hint=""
-        />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/output_screen"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="bottom|end"
-        android:textSize="@dimen/output_text_size"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:text="@string/user_output_placeholder"
-        tools:text="@string/user_output_placeholder"
-        />
+        <EditText
+            android:id="@+id/input_screen"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:gravity="start|center"
+            android:maxLines="3"
+            android:lines="1"
+            android:scrollbars="horizontal"
+            android:scrollHorizontally="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/input_text_size"
+            android:textStyle="bold"
+            android:inputType="text"
+            android:cursorVisible="true"
+            android:textCursorDrawable="@drawable/cursor"
+            android:background="@android:color/transparent"
+            android:text=""
+            tools:text="@string/user_input_placeholder"
+            />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/output_screen"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/margin_big"
+            android:gravity="end|center"
+            android:textSize="@dimen/output_text_size"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:text="@string/user_output_placeholder"
+            tools:text="@string/user_output_placeholder"
+            />
+    </LinearLayout>
+
+</layout>
+

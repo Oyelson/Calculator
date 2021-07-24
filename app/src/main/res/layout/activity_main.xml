@@ -1,16 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
-        <include layout="@layout/input_screen"/>
+        <include
+            android:id="@+id/screen"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            layout="@layout/input_screen"
+            />
 
-        <include layout="@layout/operand_operator_layout" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:gravity="end|center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:paddingLeft="@dimen/padding"
+            android:paddingRight="@dimen/padding"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/delete"
+                android:text="@string/delete_title"
+                android:textColor="@color/delete_bg_dark"
+                android:background="@drawable/rounded_button_operand"
+                style="@style/ButtonStyleHelper"
+                />
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/operand_operator_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7"
+            layout="@layout/operand_operator_layout"
+            />
 
     </LinearLayout>
+
 </layout>
