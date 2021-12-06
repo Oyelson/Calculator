@@ -19,9 +19,9 @@
     <color name="operand_bg_light">#FFE9F0F4</color>
     <color name="operand_bg_dark">#FF222427</color>
 
-    <color name="delete_bg_dark">#FF9E3139</color>
-    <color name="delete_bg_light">#FFF8ECED</color>
+    <color name="clear_bg_dark">#FF9E3139</color>
+    <color name="clear_bg_light">#FFF8ECED</color>
 
-    <color name="delete_txt_dark">#FF2D191E</color>
-    <color name="delete_txt_light">#FFF7979D</color>
+    <color name="clear_txt_dark">#FF2D191E</color>
+    <color name="clear_txt_light">#FFF7979D</color>
 </resources>

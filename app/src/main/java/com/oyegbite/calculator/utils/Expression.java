@@ -7,6 +7,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.widget.EditText;
 
 import androidx.annotation.RequiresApi;
 
@@ -16,6 +17,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +30,9 @@ public class Expression {
     private StringBuilder mRawInput;
     private final Set<String> operators;
     private boolean mIsInputValid = true;
+
+    private int cursorPosStart = 0;
+    private int cursorPosEnd = 0;
 
     private final String POINT;
     private final String MINUS;
@@ -95,10 +100,35 @@ public class Expression {
         clear();
     }
 
-    public void add(String token) {
-        mRawInput.append(token);
+    public void clear() {
+        mRawInput = new StringBuilder();
+        mInput = new StringBuilder();
+        mIsInputValid = false;
+    }
+
+    public void add(String token, int cursorPositionStart, int cursorPositionEnd, EditText inputScreen) {
+//        mRawInput.append(token);
+        Log.i(TAG, "token = " + token + ", curStart = " + cursorPositionStart + ", curEnd = " + cursorPositionEnd);
+        Log.i(TAG, "Raw Input before delete = '" + getRawInput() + "'");
+        mRawInput.delete(cursorPositionStart, cursorPositionEnd);
+        cursorPosStart = cursorPositionStart;
+        cursorPosEnd = cursorPositionEnd;
+        Log.i(TAG, "Raw Input after delete = '" + getRawInput() + "'");
+        // "ab"
+        mRawInput.insert(cursorPositionStart, token);
+//        inputScreen.setSelection(cursorPositionStart + token.length());
+        Log.i(TAG, "Raw Input after insert = '" + getRawInput() + "'");
+        Log.i(TAG, "\n");
         mInput = modify(mRawInput.toString());
         mIsInputValid = validate(mInput.toString());
+    }
+
+    public int getCursorPosStart() {
+        return cursorPosStart;
+    }
+
+    public int getCursorPosEnd() {
+        return cursorPosEnd;
     }
 
     public void pop() {
@@ -111,12 +141,6 @@ public class Expression {
 
     public boolean isValid() {
         return mIsInputValid;
-    }
-
-    public void clear() {
-        mRawInput = new StringBuilder();
-        mInput = new StringBuilder();
-        mIsInputValid = false;
     }
 
     public String getRawInput() {
@@ -251,7 +275,6 @@ public class Expression {
                 } else {
                     sb.append(token);
                 }
-
             }
         }
 
@@ -260,15 +283,47 @@ public class Expression {
         // Add colors to all the operators in the input.
         String displayString = sb.toString();
         Spannable spannableWithColoredOperators = new SpannableString(displayString);
+
+        // Store all the open parentheses.
+        // We want to add color the last close parentheses and its corresponding open parentheses.
+        Stack<Integer> openIdx = new Stack<>();
+        int coloredOpenedIdx = -1;
+        int coloredClosedIdx = -1;
+
         for (int s = 0; s < displayString.length(); s++) {
             if (operators.contains(displayString.charAt(s)+"")) {
                 spannableWithColoredOperators.setSpan(
-                        new ForegroundColorSpan(mContext.getResources().getColor(R.color.equals_color_bg)),
+                        new ForegroundColorSpan(mContext.getResources().getColor(R.color.operator_color_bg)),
                         s,
                         s + 1,
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 );
             }
+
+            if ((displayString.charAt(s) + "").equals(OPEN)) {
+                openIdx.add(s);
+            } else if ((displayString.charAt(s) + "").equals(CLOSE)) {
+                if (!openIdx.isEmpty()) {
+                    coloredClosedIdx = s;
+                    coloredOpenedIdx = openIdx.pop();
+                }
+            }
+        }
+
+        // Add color the last close parentheses and its corresponding open parentheses.
+        if (coloredOpenedIdx > -1) {
+            spannableWithColoredOperators.setSpan(
+                    new ForegroundColorSpan(mContext.getResources().getColor(R.color.equals_color_bg)),
+                    coloredOpenedIdx,
+                    coloredOpenedIdx + 1,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+            spannableWithColoredOperators.setSpan(
+                    new ForegroundColorSpan(mContext.getResources().getColor(R.color.equals_color_bg)),
+                    coloredClosedIdx,
+                    coloredClosedIdx + 1,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
         }
 
         return spannableWithColoredOperators;
@@ -362,7 +417,6 @@ public class Expression {
             if (token.equals(POINT) && (i + 1) < len && !Character.isDigit(input.charAt(i + 1))) {
                 sb.append("0");
             }
-
         }
 
         return sb;
@@ -371,7 +425,7 @@ public class Expression {
     public boolean validate(String input) {
         if (input.length() == 0) return true;
         if (!hadValidSequence(input)) return false;
-        Log.i(TAG,"Passed valid sequence");
+//        Log.i(TAG,"Passed valid sequence");
 
         // operand operator operand
         // Operators: + - /÷ *×
@@ -381,20 +435,20 @@ public class Expression {
         String regex1 = "^\\s*(?:0\\.|[–\\-+]|\\(+|[0-9])";
         Matcher matcher1 = Pattern.compile(regex1).matcher(input);
         if (!matcher1.find()) return false;
-        Log.i(TAG, "Passed regex1");
+//        Log.i(TAG, "Passed regex1");
 
         // 2. No adjacent operators.
         String regex2 = "(?:[–\\-+÷×*^/]\\s*){2,}"; // Get all adjacent operators
         Matcher matcher2 = Pattern.compile(regex2).matcher(input);
         if (matcher2.find()) return false;
-        Log.i(TAG, "Passed regex2");
+//        Log.i(TAG, "Passed regex2");
 
         // 3. No point just before the open parentheses.
         // Get all point that is followed by an open parentheses.
         String regex3 = "(?:[.]+\\s*(?=\\())";
         Matcher matcher3 = Pattern.compile(regex3).matcher(input);
         if (matcher3.find()) return false;
-        Log.i(TAG, "Passed regex3");
+//        Log.i(TAG, "Passed regex3");
 
         // 4. Only +, -, (, and operands just after the open parentheses
         // (i.e *, /, ., ) should not be just after the open parentheses)
@@ -402,28 +456,28 @@ public class Expression {
         String regex4 = "(?:\\()\\s*(?=[÷×^/*.)])";
         Matcher matcher4 = Pattern.compile(regex4).matcher(input);
         if (matcher4.find()) return false;
-        Log.i(TAG, "Passed regex4");
+//        Log.i(TAG, "Passed regex4");
 
         // 5. No operator, point, or ( just before the close parentheses.
         // Get all operator, point or ( just before the close parentheses.
         String regex5 = "[–\\-+/*÷×^.(]\\s*(?=\\))";
         Matcher matcher5 = Pattern.compile(regex5).matcher(input);
         if (matcher5.find()) return false;
-        Log.i(TAG, "Passed regex5");
+//        Log.i(TAG, "Passed regex5");
 
         // 6. No operand or point just after the close parentheses.
         // Get all operand or point just after the close parentheses
         String regex6 = "(?:\\))\\s*(?=[0-9.])";
         Matcher matcher6 = Pattern.compile(regex6).matcher(input);
         if (matcher6.find()) return false;
-        Log.i(TAG, "Passed regex6");
+//        Log.i(TAG, "Passed regex6");
 
         // 7. Only a number can preceed and also follow a point.
         // Get all non-number that preceed or follow a point.
         String regex7 = "([–\\-+/*÷×^)(.]\\s*(?=\\.)|(?:\\.)\\s*(?=[–\\-+/*÷×^)(.]))";
         Matcher matcher7 = Pattern.compile(regex7).matcher(input);
         if (matcher7.find()) return false;
-        Log.i(TAG, "Passed regex7");
+//        Log.i(TAG, "Passed regex7");
 
         return true;
     }
@@ -474,6 +528,7 @@ public class Expression {
 
         // Correct: "230.6" or "0.0344" or "0.50030" or "2003.323"
         // Wrong: "00.3" or "0980" or "024.00.42" or "94.00.42"
+        // 123+456
         String regex = "^(?:(?:0|[1-9]+\\d*)(?:\\.\\d+)?|0|(?:\\.\\d+)?|(?:0|[1-9]+\\d*)(?:\\.)?)$";
         return Pattern.matches(regex, input);
     }

@@ -14,7 +14,9 @@
             android:text="@string/exponent_title"
             android:textColor="@color/text_light"
             android:background="@drawable/rounded_button_operand"
-            style="@style/ButtonStyle"/>
+            style="@style/ButtonStyle"
+            android:onClick="onClick"
+            />
 
         <TextView
             android:id="@+id/zero"
@@ -23,6 +25,7 @@
             android:background="@drawable/rounded_button_operand"
             style="@style/ButtonStyle"
             android:layout_weight="1"
+            android:onClick="onClick"
             />
 
         <TextView
@@ -31,6 +34,7 @@
             android:textColor="@color/text_light"
             android:background="@drawable/rounded_button_operand"
             style="@style/ButtonStyle"
+            android:onClick="onClick"
             />
 
         <TextView
@@ -39,6 +43,7 @@
             android:textColor="@color/white"
             android:background="@drawable/rounded_button_equals"
             style="@style/ButtonStyle"
+            android:onClick="onClick"
             />
 
     </LinearLayout>

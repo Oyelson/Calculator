@@ -18,19 +18,24 @@
             />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_gravity="end"
             android:gravity="end|center"
             android:layout_marginTop="@dimen/margin_small"
             android:paddingLeft="@dimen/padding"
             android:paddingRight="@dimen/padding"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/delete"
-                android:text="@string/delete_title"
-                android:textColor="@color/delete_bg_dark"
-                android:background="@drawable/rounded_button_operand"
-                style="@style/ButtonStyleHelper"
+            <ImageButton
+                android:id="@+id/backspace"
+                android:src="@drawable/ic_backspace"
+                style="@style/ImageButtonStyle"
+                android:background="@drawable/rounded_image_backspace"
+                android:scaleType="fitXY"
+                android:tint="@color/white"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/backspace"
+                android:onClick="onClick"
                 />
 
         </LinearLayout>

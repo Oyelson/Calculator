@@ -20,15 +20,16 @@
             android:textColor="@color/white"
             android:textCursorDrawable="@drawable/cursor"
             android:cursorVisible="true"
-            android:gravity="start|center"
+            android:gravity="end|center"
+            android:textAlignment="textEnd"
             android:inputType="textMultiLine"
             android:scrollbars="vertical"
             android:maxLines="3"
             android:background="@android:color/transparent"
             android:text=""
+            android:hint="@string/enter_expression"
             android:autofillHints="0"
-            android:hint="@string/zero"
-            tools:text="@string/user_input_placeholder"
+            tools:text="@string/enter_expression"
             />
 
         <TextView

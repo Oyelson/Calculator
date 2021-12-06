@@ -10,11 +10,12 @@
         android:id="@+id/first_row">
 
         <TextView
-            android:id="@+id/delete_all"
-            android:text="@string/delete_all"
-            android:textColor="@color/delete_txt_light"
+            android:id="@+id/clear"
+            android:text="@string/clear"
+            android:textColor="@color/clear_txt_light"
             android:background="@drawable/rounded_button_delete"
             style="@style/ButtonStyle"
+            android:onClick="onClick"
             />
 
         <TextView
@@ -23,6 +24,7 @@
             android:textColor="@color/text_light"
             android:background="@drawable/rounded_button_operand"
             style="@style/ButtonStyle"
+            android:onClick="onClick"
             />
 
         <TextView
@@ -31,6 +33,7 @@
             android:textColor="@color/text_light"
             android:background="@drawable/rounded_button_operand"
             style="@style/ButtonStyle"
+            android:onClick="onClick"
             />
 
         <TextView
@@ -39,6 +42,7 @@
             android:textColor="@color/white"
             android:background="@drawable/rounded_button_operator"
             style="@style/ButtonStyle"
+            android:onClick="onClick"
             />
     </LinearLayout>
 

@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">Calculator</string>
 
-    <string name="user_input_placeholder">2 + 60 * (2 + 9) / 6 % 2 + 60 * (2 + 9) / 6</string>
+    <string name="user_input_placeholder">2 + (5 * 6) ^ 10</string>
     <string name="user_output_placeholder">0</string>
 
-    <string name="delete_all">C</string>
+    <string name="clear">C</string>
     <string name="open_paren">(</string>
     <string name="close_paren">)</string>
 
@@ -27,8 +27,8 @@
     <string name="equals">=</string>
     <string name="exponent">^</string>
 
-    <string name="delete_all_title">delete all</string>
-    <string name="delete_title">Del</string>
+    <string name="clear_title">delete all</string>
+    <string name="backspace_title">Del</string>
     <string name="exponent_title">x<sup>y</sup></string>
     <string name="open_paren_title">open parentheses</string>
     <string name="close_paren_title">close parentheses</string>
@@ -56,5 +56,8 @@
     <string name="error">Error: Incomplete expression</string>
 
     <string name="cant_divide_by_zero">Can\'t be divide by zero</string>
+    <string name="backspace">Del</string>
+
+    <string name="enter_expression">Enter Expression...</string>
 
 </resources>

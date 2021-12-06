@@ -9,11 +9,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,22 +22,15 @@ import com.oyegbite.calculator.utils.AppUtils;
 import com.oyegbite.calculator.utils.Expression;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private ActivityMainBinding mBinding;
     private Toast mToast;
     private InputMethodManager mImm;
 
-    private TextView delete, deleteAll, openParen, closeParen, divide;
-    private TextView seven, eight, nine, multiply;
-    private TextView four, five, six, minus;
-    private TextView one, two, three, plus;
-    private TextView exponent, zero, point, equals;
-    
     private Map<Integer, String> operandsID;
     private Map<Integer, String> operatorsID;
     private Map<Integer, String> parenthesesID;
@@ -48,9 +41,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Expression mExpression;
     private int lastClickedButtonID;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // Remove notification bar
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
@@ -64,39 +59,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mExpression = new Expression(this);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setBinding() {
-        activateAllButtons();
-    }
-
-    private void activateAllButtons() {
         activateInputScreen();
         activateOutputScreen();
-
-        activateDeleteButton();
-        activateDeleteAllButton();
-        activateOpenParenButton();
-        activateCloseParenButton();
-        activateDivideButton();
-
-        activateSevenButton();
-        activateEightButton();
-        activateNineButton();
-        activateMultiplyButton();
-
-        activateFourButton();
-        activateFiveButton();
-        activateSixButton();
-        activateMinusButton();
-
-        activateOneButton();
-        activateTwoButton();
-        activateThreeButton();
-        activatePlusButton();
-
-        activateExponentButton();
-        activateZeroButton();
-        activatePointButton();
-        activateEqualsButton();
     }
 
     private void setOperandsID() {
@@ -132,129 +98,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }};
     }
 
-    private void activateInputScreen() {
-        inputScreen = mBinding.screen.inputScreen;
-        inputScreen.setSelection(inputScreen.getText().length());
-        inputScreen.requestFocus();
-        hideKeyboard(inputScreen);
-        inputScreen.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.onTouchEvent(event);
-                hideKeyboard(v);
-                return true;
-            }
-
-        });
-    }
-
     private void activateOutputScreen() {
         outputScreen = mBinding.screen.outputScreen;
     }
 
-    private void activateDeleteAllButton() {
-        deleteAll = mBinding.operandOperatorLayout.cancelToDivide.deleteAll;
-        deleteAll.setOnClickListener(this);
-    }
-
-    private void activateDeleteButton() {
-        delete = mBinding.delete;
-        delete.setOnClickListener(this);
-    }
-
-    private void activateOpenParenButton() {
-        openParen = mBinding.operandOperatorLayout.cancelToDivide.openParen;
-        openParen.setOnClickListener(this);
-    }
-
-    private void activateCloseParenButton() {
-        closeParen = mBinding.operandOperatorLayout.cancelToDivide.closeParen;
-        closeParen.setOnClickListener(this);
-    }
-
-    private void activateDivideButton() {
-        divide = mBinding.operandOperatorLayout.cancelToDivide.divide;
-        divide.setOnClickListener(this);
-    }
-
-    private void activateSevenButton() {
-        seven = mBinding.operandOperatorLayout.sevenToMultiply.seven;
-        seven.setOnClickListener(this);
-    }
-
-    private void activateEightButton() {
-        eight = mBinding.operandOperatorLayout.sevenToMultiply.eight;
-        eight.setOnClickListener(this);
-    }
-
-    private void activateNineButton() {
-        nine = mBinding.operandOperatorLayout.sevenToMultiply.nine;
-        nine.setOnClickListener(this);
-    }
-
-    private void activateMultiplyButton() {
-        multiply = mBinding.operandOperatorLayout.sevenToMultiply.multiply;
-        multiply.setOnClickListener(this);
-    }
-
-    private void activateFourButton() {
-        four = mBinding.operandOperatorLayout.fourToMinus.four;
-        four.setOnClickListener(this);
-    }
-
-    private void activateFiveButton() {
-        five = mBinding.operandOperatorLayout.fourToMinus.five;
-        five.setOnClickListener(this);
-    }
-
-    private void activateSixButton() {
-        six = mBinding.operandOperatorLayout.fourToMinus.six;
-        six.setOnClickListener(this);
-    }
-
-    private void activateMinusButton() {
-        minus = mBinding.operandOperatorLayout.fourToMinus.minus;
-        minus.setOnClickListener(this);
-    }
-
-    private void activateOneButton() {
-        one = mBinding.operandOperatorLayout.oneToPlus.one;
-        one.setOnClickListener(this);
-    }
-
-    private void activateTwoButton() {
-        two = mBinding.operandOperatorLayout.oneToPlus.two;
-        two.setOnClickListener(this);
-    }
-
-    private void activateThreeButton() {
-        three = mBinding.operandOperatorLayout.oneToPlus.three;
-        three.setOnClickListener(this);
-    }
-
-    private void activatePlusButton() {
-        plus = mBinding.operandOperatorLayout.oneToPlus.plus;
-        plus.setOnClickListener(this);
-    }
-
-    private void activateExponentButton() {
-        exponent = mBinding.operandOperatorLayout.zeroToEquals.exponent;
-        exponent.setOnClickListener(this);
-    }
-
-    private void activateZeroButton() {
-        zero = mBinding.operandOperatorLayout.zeroToEquals.zero;
-        zero.setOnClickListener(this);
-    }
-
-    private void activatePointButton() {
-        point = mBinding.operandOperatorLayout.zeroToEquals.point;
-        point.setOnClickListener(this);
-    }
-
-    private void activateEqualsButton() {
-        equals = mBinding.operandOperatorLayout.zeroToEquals.equals;
-        equals.setOnClickListener(this);
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void activateInputScreen() {
+        inputScreen = mBinding.screen.inputScreen;
+//        inputScreen.setSelection(inputScreen.getText().length());
+//        inputScreen.requestFocus();
+        inputScreen.setShowSoftInputOnFocus(false);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
@@ -263,26 +116,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         vibrateDevice();
         int viewID = view.getId();
 
+        Log.i(TAG, "inputScreen = '" + inputScreen.getText().toString() + "'");
+        Log.i(TAG, "inputScreen.getSelectionStart() = " + inputScreen.getSelectionStart());
+        Log.i(TAG, "inputScreen.getSelectionEnd() = " + inputScreen.getSelectionEnd());
         int cursorPosStart = Math.max(0, inputScreen.getSelectionStart());
         int cursorPosEnd = Math.max(0, inputScreen.getSelectionEnd());
 
-//        if (lastClickedButtonID == R.id.equals && viewID != R.id.equals) {
-//            mExpression.clear();
-//        }
-
-        Log.i(TAG, "");
         if (viewID == R.id.equals) {
             Log.i(TAG, getString(R.string.equals) + " " + getString(R.string.was_clicked));
             displayFinalResult();
             lastClickedButtonID = viewID;
             return;
 
-        } else if (viewID == R.id.delete_all) { // When the delete button is clicked
-            Log.i(TAG, getString(R.string.delete_all_title) + " " + getString(R.string.was_clicked));
+        } else if (viewID == R.id.clear) { // When the backspace button is clicked
+            Log.i(TAG, getString(R.string.clear_title) + " " + getString(R.string.was_clicked));
             clearInput();
             displayInput();
 
-        } else if (viewID == R.id.delete) {
+        } else if (viewID == R.id.backspace) {
             mExpression.pop();
             displayInput();
 
@@ -290,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (operatorsID.containsKey(viewID)) {
                 Log.i(TAG, operatorsID.get(viewID) + " " + getString(R.string.was_clicked));
 
-                mExpression.add(operatorsID.get(viewID));
+                mExpression.add(operatorsID.get(viewID), cursorPosStart, cursorPosEnd, inputScreen);
                 if (mExpression.isValid()) {
                     displayInput();
                 } else {
@@ -300,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else if (operandsID.containsKey(viewID)) {
                 Log.i(TAG, operandsID.get(viewID) + " " + getString(R.string.was_clicked));
 
-                mExpression.add(operandsID.get(viewID));
+                mExpression.add(operandsID.get(viewID), cursorPosStart, cursorPosEnd, inputScreen);
                 if (mExpression.isValid()) {
                     displayInput();
                 } else {
@@ -310,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else if (parenthesesID.containsKey(viewID)) {
                 Log.i(TAG, parenthesesID.get(viewID) + " " + getString(R.string.was_clicked));
 
-                mExpression.add(parenthesesID.get(viewID));
+                mExpression.add(parenthesesID.get(viewID), cursorPosStart, cursorPosEnd, inputScreen);
                 if (mExpression.isValid()) {
                     displayInput();
                 } else {
@@ -329,19 +180,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void displayInput() {
         inputScreen.setText(mExpression.getReadableInput(), TextView.BufferType.SPANNABLE);
-        inputScreen.setSelection(inputScreen.getText().length()); // Place cursor at end of
+//        inputScreen.setSelection(inputScreen.getText().length()); // Place cursor at end of string
         
         Log.i(TAG, "Raw Input = '" + mExpression.getRawInput() + "'");
         Log.i(TAG, "Readable Input = '" + mExpression.getReadableInput() + "'");
         Log.i(TAG, "Edited Input = '" + mExpression.getEditedInput() + "'");
         Log.i(TAG, "Computational Input = '" + mExpression.getComputationInput() + "'");
     }
-
-    private void vibrateDevice() {
-        Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        vibe.vibrate(100);
-    }
-    
     
     @RequiresApi(api = Build.VERSION_CODES.R)
     private void displayResult() {
@@ -381,9 +226,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return;
             }
             mExpression.clear();
-            mExpression.add(result);
+            int cursorPosStart = Math.max(0, inputScreen.getSelectionStart());
+            int cursorPosEnd = Math.max(0, inputScreen.getSelectionEnd());
+            mExpression.add(result, cursorPosStart, cursorPosEnd, inputScreen);
             inputScreen.setText(result);
-            inputScreen.setSelection(inputScreen.getText().length());
+//            inputScreen.setSelection(inputScreen.getText().length());
             outputScreen.setText("");
 
         } else {
@@ -395,27 +242,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    protected void onResume() {
-        hideKeyboard(inputScreen);
-        super.onResume();
+    private void vibrateDevice() {
+        Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        vibe.vibrate(100);
     }
 
-    @Override
-    protected void onStart() {
-        hideKeyboard(inputScreen);
-        super.onStart();
-    }
-
-    private void hideKeyboard(View v) {
-        Log.i(TAG, "inputScreen = " + inputScreen);
-        getMethodManager().hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
-    }
-
-    private InputMethodManager getMethodManager() {
-        if (mImm == null) {
-            mImm = (InputMethodManager) getSystemService (Context.INPUT_METHOD_SERVICE);
-        }
-        return mImm;
-    }
 }

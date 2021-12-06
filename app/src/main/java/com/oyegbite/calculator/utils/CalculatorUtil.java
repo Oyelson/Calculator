@@ -104,6 +104,11 @@ public class CalculatorUtil {
      *
      * "2098+300*91-84/3" => ["2098", "300", "91", "*", "+", "84", "3", "/", "-"]
      *
+     * => "2098+300*91-84/3"
+     *                ^
+     * => post = [2098, 300, 91, ]...
+     * => operator = [+, *]...
+     *
      * "(2098+300*(91-84))/3" => ["2098", "300", "91", "84", "-", "*", "+", "3", "/"]
      *
      * Assumes infixExpression is a valid expression.
@@ -122,7 +127,6 @@ public class CalculatorUtil {
         if (!new Expression(mContext).validate(newInfixExpression)) {
             return new ArrayList<String>();
         }
-        Log.i(TAG, "infixExpression before = " + infixExpression);
 
         Stack<String> operatorStack = new Stack<>();
         List<String> postfix = new ArrayList<>();
